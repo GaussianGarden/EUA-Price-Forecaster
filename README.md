@@ -1,2 +1,4 @@
 # EUA Price Forecaster
-Hallo Welt!
+
+## Instructions:
+1. Create database metadata by running tables.py

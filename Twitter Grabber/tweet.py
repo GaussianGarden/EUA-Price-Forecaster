@@ -18,3 +18,12 @@ class Tweet(Base):
 
     # Store a references to the author
     author = relationship("Author", back_populates="tweet")
+
+    def __init__(self, id, text, created_at, language, retweet_count, favorite_count, author_id):
+        self.id = id
+        self.text = text
+        self.created_at = created_at
+        self.language = language
+        self.retweet_count = retweet_count
+        self.favorite_count = favorite_count
+        self.author_id = author_id

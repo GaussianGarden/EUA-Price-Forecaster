@@ -7,3 +7,4 @@ Twitter Grabber/.idea/dictionaries/Dominik.xml
 Twitter Grabber/.idea/inspectionProfiles/Project_Default.xml
 Twitter Grabber/.idea/libraries/R_User_Library.xml
 Twitter Grabber/secrets/secrets.json
+*.db

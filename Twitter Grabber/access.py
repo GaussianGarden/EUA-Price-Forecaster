@@ -7,8 +7,13 @@ import os
 class Accessor(object):
 
     def __init__(self):
+        """
+        Create an API Accessor object. This reads the secrets from the configuration and binds a twitter API object
+        and a logger to the Accessor instance.
+        """
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(filename="log.txt", level=logging.DEBUG)
+        # ToDo: Path should not be hardcoded
         with open(os.path.join(os.getcwd(), "secrets", "secrets.json"), "r", encoding="utf-8") as f:
             self.secrets = json.load(f)["api"]
             masked_secrets = {key: value[:3] + ("*" * (len(value) - 3)) for key, value in self.secrets.items()}
@@ -29,3 +34,19 @@ class Accessor(object):
         except Exception as err:
             self.logger.exception(err)
             return []
+
+
+if __name__ == "__main__":
+    acc = Accessor()
+    import pprint
+    tweets = acc.get_tweets_by_user("warcraftdevs")
+    pprint.pprint(tweets[0].AsJsonString())
+    import database
+    db = database.Database()
+    import tables
+    status = tweets[2]
+    tweet = tables.Tweet.from_status(status)
+    tweet.author = tables.Author.from_status(status)
+    tweet.author.count_data = tables.AuthorCountData.from_status(status)
+    with db.get_session() as session:
+        db.add_objects(session, tweet)

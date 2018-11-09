@@ -2,6 +2,7 @@ import twitter
 import json
 import logging
 import os
+import tables
 
 
 class Accessor(object):
@@ -39,14 +40,9 @@ class Accessor(object):
 if __name__ == "__main__":
     acc = Accessor()
     import pprint
-    tweets = acc.get_tweets_by_user("warcraftdevs")
-    pprint.pprint(tweets[0].AsJsonString())
-    import database
-    db = database.Database()
+    tweets = acc.get_tweets_by_user("warcraftdevs", count=200)
+    db = tables.Database()
     import tables
-    status = tweets[2]
-    tweet = tables.Tweet.from_status(status)
-    tweet.author = tables.Author.from_status(status)
-    tweet.author.count_data = tables.AuthorCountData.from_status(status)
     with db.get_session() as session:
-        db.add_objects(session, tweet)
+        db.insert_or_update_statuses(session, tweets)
+

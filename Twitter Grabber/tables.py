@@ -83,10 +83,12 @@ class Database(object):
     @staticmethod
     def get_author_count_data_as_of(session, id_as_of_pairs):
         """
-
-        :param session:
-        :param id_as_of_pairs:
-        :return:
+        Return a dictionary of the form {(author_id, as_of): author_count_data_object} for AuthorCountData records
+        from the database given an iterable of desired primary keys.
+        :param session: An SQLAlchemy session
+        :param id_as_of_pairs: An iterable of pairs of the form (id, as_of), i.e. the primary key of AuthorCountData
+        :return: A dictionary of the form {(author_id, as_of): author_count_data_object} for AuthorCountData records
+        from the database
         """
         query = session.query(AuthorCountData)
         or_clause = or_(*[and_(AuthorCountData.author_id == author_id, AuthorCountData.as_of == as_of)
@@ -106,16 +108,16 @@ class Database(object):
         :return: A tuple of dictionaries as in get_records_by_ids for Tweet, Author and AuthorCountData
         """
         tweet_ids, author_ids, id_as_of_pairs = \
-            (Database.get_keys_from_status_list(status_list, lambda status: status.id),
-             Database.get_keys_from_status_list(status_list, lambda status: status.user.id),
-             Database.get_keys_from_status_list(status_list,
-                                                lambda status: (status.user.id, status.created_at_in_seconds)))
+            (Database._get_keys_from_status_list(status_list, lambda status: status.id),
+             Database._get_keys_from_status_list(status_list, lambda status: status.user.id),
+             Database._get_keys_from_status_list(status_list,
+                                                 lambda status: (status.user.id, status.created_at_in_seconds)))
         return (self.get_records_by_ids(session, Tweet, tweet_ids),
                 self.get_records_by_ids(session, Author, author_ids),
                 self.get_author_count_data_as_of(session, id_as_of_pairs))
 
     @staticmethod
-    def get_keys_from_status_list(status_list, key_extractor):
+    def _get_keys_from_status_list(status_list, key_extractor):
         """
         Return a set of keys (in the database sense) from an iterable of Status objects
         :param status_list: An iterable of Status objects (from the Twitter module)
@@ -124,33 +126,42 @@ class Database(object):
         """
         return {key_extractor(status) for status in status_list}
 
-    # ToDo: Refactor this to avoid repetition
+    @staticmethod
+    def _compare_with_dict(session, status, mapper, dic, key_extractor):
+        """
+        Check if the given Status component (Tweet, Author, AuthorCountData) is in the dictionary containing database
+        records. If so, update the existing record. Otherwise, create a new record and add it to the current session.
+        :param session: An SQLAlchemy session
+        :param status: A Status object (from Twitter module)
+        :param mapper: The ORM class
+        :param dic: A dictionary from _get_dicts_from_status_list
+        :param key_extractor: A function to extract the desired object's key from a Status object
+        :return: None
+        """
+        key = key_extractor(status)
+        if key in dic:
+            dic[key].update(status)
+        else:
+            new_record = mapper.from_status(status)
+            dic[key] = new_record
+            session.add(new_record)
+
     def insert_or_update_statuses(self, session, status_list):
-        tweet_ids = {status.id for status in status_list}
-        tweet_dict = self.get_records_by_ids(session, Tweet, tweet_ids)
-        author_ids = {status.user.id for status in status_list}
-        author_dict = self.get_records_by_ids(session, Author, author_ids)
-        id_as_of_pairs = {(status.user.id, status.created_at_in_seconds) for status in status_list}
-        author_count_data_dict = self.get_author_count_data_as_of(session, id_as_of_pairs)
+        """
+        Check the status_list for each contained Status object. If the related data is already in the database, update
+        it. Otherwise, insert add it to the session. This mimics Django ORM's .save() method that intelligently either
+        updates or inserts data.
+        :param session: An SQLAlchemy session
+        :param status_list: An iterable of Status objects (from Twitter module)
+        :return: None
+        """
+        tweet_dict, author_dict, author_count_data_dict = self.get_dicts_from_status_list(session, status_list)
         for status in status_list:
-            if status.id in tweet_dict:
-                tweet_dict[status.id].update(status)
-            else:
-                new_tweet = Tweet.from_status(status)
-                tweet_dict[status.id] = new_tweet
-                session.add(new_tweet)
-            if status.user.id in author_dict:
-                author_dict[status.user.id].update(status)
-            else:
-                new_author = Author.from_status(status)
-                author_dict[status.user.id] = new_author
-                session.add(new_author)
-            if (status.user.id, status.created_at_in_seconds) in author_count_data_dict:
-                author_count_data_dict[(status.user.id, status.created_at_in_seconds)].update(status)
-            else:
-                new_author_count_data = AuthorCountData.from_status(status)
-                author_count_data_dict[(status.user.id, status.created_at_in_seconds)] = new_author_count_data
-                session.add(new_author_count_data)
+            for (mapper, dic, key_extractor) in [(Tweet, tweet_dict, lambda state: state.id),
+                                                 (Author, author_dict, lambda state: state.user.id),
+                                                 (AuthorCountData, author_count_data_dict,
+                                                 lambda state: (state.user.id, state.created_at_in_seconds))]:
+                Database._compare_with_dict(session, status, mapper, dic, key_extractor)
 
 
 class Tweet(Base):
@@ -181,6 +192,11 @@ class Tweet(Base):
 
     @staticmethod
     def from_status(status):
+        """
+        Make a Tweet instance from A Status object
+        :param status: A Status object (from Twitter module)
+        :return: A Tweet instance representing that Status
+        """
         return Tweet(
             status.id,
             status.text,
@@ -242,6 +258,11 @@ class Author(Base):
 
     @staticmethod
     def from_status(status):
+        """
+        Make an Author instance from A Status object
+        :param status: A Status object (from Twitter module)
+        :return: An Author instance representing the user that created the Status
+        """
         return Author(
             status.user.id,
             status.user.description,
@@ -285,6 +306,11 @@ class AuthorCountData(Base):
 
     @staticmethod
     def from_status(status):
+        """
+        Make an AuthorCountData instance from A Status object
+        :param status: A Status object (from Twitter module)
+        :return: An AuthorCountData instance representing the count data of the user that created the Status
+        """
         return AuthorCountData(
             status.user.id,
             status.created_at_in_seconds,

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="157fd8e1-cdfd-4d0d-a5c7-51947bc26061" name="Default Changelist" comment="" />
+    <list default="true" id="157fd8e1-cdfd-4d0d-a5c7-51947bc26061" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/access.py" beforeDir="false" afterPath="$PROJECT_DIR$/access.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tables.py" beforeDir="false" afterPath="$PROJECT_DIR$/tables.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,7 +28,7 @@
         <counts>
           <entry key="JSON" value="558" />
           <entry key="PLAIN_TEXT" value="15" />
-          <entry key="Python" value="12873" />
+          <entry key="Python" value="14946" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages" />
@@ -45,7 +50,7 @@
           <entry key="access" value="369" />
           <entry key="dummy" value="15" />
           <entry key="json" value="558" />
-          <entry key="py" value="11314" />
+          <entry key="py" value="13387" />
         </counts>
       </usages-collector>
     </session>
@@ -64,11 +69,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/access.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="493">
-              <caret line="47" column="56" selection-start-line="47" selection-start-column="56" selection-end-line="47" selection-end-column="56" />
+            <state relative-caret-position="239">
+              <caret line="46" column="41" lean-forward="true" selection-start-line="46" selection-start-column="41" selection-end-line="46" selection-end-column="41" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
-                <marker date="1541854916713" expanded="true" signature="91:869" ph="..." />
+                <marker date="1541883977307" expanded="true" signature="91:869" ph="..." />
               </folding>
             </state>
           </provider>
@@ -77,13 +82,14 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tables.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-153">
-              <caret line="105" column="103" selection-start-line="105" selection-start-column="103" selection-end-line="105" selection-end-column="103" />
+            <state relative-caret-position="204">
+              <caret line="12" column="60" lean-forward="true" selection-start-line="12" selection-start-column="60" selection-end-line="12" selection-end-column="60" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
-                <marker date="1541864682830" expanded="true" signature="5084:5135" ph="..." />
-                <marker date="1541864682830" expanded="true" signature="8270:8679" ph="..." />
-                <marker date="1541864682830" expanded="true" signature="10299:10304" ph="..." />
+                <marker date="1541884684360" expanded="true" signature="6187:6424" ph="..." />
+                <marker date="1541884684360" expanded="true" signature="6419:6424" ph="..." />
+                <marker date="1541884684360" expanded="true" signature="9358:9767" ph="..." />
+                <marker date="1541884684360" expanded="true" signature="11607:11612" ph="..." />
               </folding>
             </state>
           </provider>
@@ -130,7 +136,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="950" />
     <option name="width" value="980" />
     <option name="height" value="1040" />
@@ -282,16 +288,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="7" />
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25973153" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25973153" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" visible="true" weight="0.32907802" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32907802" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32907802" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32907802" />
@@ -321,6 +327,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/database.py" />
+    <entry file="file://C:/Program Files/Python36/Lib/site-packages/sqlalchemy/orm/attributes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/eua_util.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -331,33 +344,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Program Files/Python36/Lib/site-packages/sqlalchemy/orm/attributes.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/access.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="47" column="56" selection-start-line="47" selection-start-column="56" selection-end-line="47" selection-end-column="56" />
+        <state relative-caret-position="239">
+          <caret line="46" column="41" lean-forward="true" selection-start-line="46" selection-start-column="41" selection-end-line="46" selection-end-column="41" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
-            <marker date="1541854916713" expanded="true" signature="91:869" ph="..." />
+            <marker date="1541883977307" expanded="true" signature="91:869" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tables.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-153">
-          <caret line="105" column="103" selection-start-line="105" selection-start-column="103" selection-end-line="105" selection-end-column="103" />
+        <state relative-caret-position="204">
+          <caret line="12" column="60" lean-forward="true" selection-start-line="12" selection-start-column="60" selection-end-line="12" selection-end-column="60" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
-            <marker date="1541864682830" expanded="true" signature="5084:5135" ph="..." />
-            <marker date="1541864682830" expanded="true" signature="8270:8679" ph="..." />
-            <marker date="1541864682830" expanded="true" signature="10299:10304" ph="..." />
+            <marker date="1541884684360" expanded="true" signature="6187:6424" ph="..." />
+            <marker date="1541884684360" expanded="true" signature="6419:6424" ph="..." />
+            <marker date="1541884684360" expanded="true" signature="9358:9767" ph="..." />
+            <marker date="1541884684360" expanded="true" signature="11607:11612" ph="..." />
           </folding>
         </state>
       </provider>

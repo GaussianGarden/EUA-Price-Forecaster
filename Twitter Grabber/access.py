@@ -39,10 +39,10 @@ class Accessor(object):
 
 if __name__ == "__main__":
     acc = Accessor()
-    import pprint
-    tweets = acc.get_tweets_by_user("warcraftdevs", count=200)
+    twitter_accounts = ["energate_news", "business", "BloombergNRG", "ftenergy", "IEA"]
+    tweets_list = [acc.get_tweets_by_user(twitter_account, count=50) for twitter_account in twitter_accounts]
     db = tables.Database()
     import tables
-    with db.get_session() as session:
-        db.insert_or_update_statuses(session, tweets)
-
+    for tweets in tweets_list:
+        with db.get_session() as session:
+            db.insert_or_update_statuses(session, tweets)

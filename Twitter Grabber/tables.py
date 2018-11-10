@@ -64,31 +64,16 @@ class Database(object):
         """
         Base.metadata.create_all(self._get_engine())
 
-    def add_objects(self, objects):
-        session = self._get_session()
-        for obj in objects:
-            session.add(obj)
-        session.commit()
-        session.close()
-
-    @staticmethod
-    def get_tweets_by_ids(session, ids):
-        tweets = session.query(Tweet).filter(Tweet.id.in_(ids))
-        return {
-            tweet.id: tweet
-            for tweet in tweets
-        }
-
-    @staticmethod
-    def get_authors_by_ids(session, ids):
-        authors = session.query(Author).filter(Author.id.in_(ids))
-        return {
-            author.id: author
-            for author in authors
-        }
-
     @staticmethod
     def get_records_by_ids(session, mapper, ids):
+        """
+        Retrieve objects of the mapper class from the database given their unique ids
+        :param session: An SQLAlchemy session
+        :param mapper: The ORM class of the objects of interest (e.g. Tweet, Author, ...)
+        :param ids: An iterable of IDs of interest
+        :return: A dictionary of the form {id: object} for the intersection of the parameter "ids" and  ids that are
+         actually persisted in the database
+        """
         objs = session.query(mapper).filter(mapper.id.in_(ids))
         return {
             obj.id: obj
@@ -97,6 +82,12 @@ class Database(object):
 
     @staticmethod
     def get_author_count_data_as_of(session, id_as_of_pairs):
+        """
+
+        :param session:
+        :param id_as_of_pairs:
+        :return:
+        """
         query = session.query(AuthorCountData)
         or_clause = or_(*[and_(AuthorCountData.author_id == author_id, AuthorCountData.as_of == as_of)
                           for i, (author_id, as_of) in enumerate(id_as_of_pairs)])
@@ -106,6 +97,32 @@ class Database(object):
             for author_count_data in author_count_data_result
         }
         return result
+
+    def get_dicts_from_status_list(self, session, status_list):
+        """
+        Return a tuple of dicts for relevant data from the database
+        :param session: An SQLAlchemy session
+        :param status_list: An iterable of Status objects (from the Twitter module)
+        :return: A tuple of dictionaries as in get_records_by_ids for Tweet, Author and AuthorCountData
+        """
+        tweet_ids, author_ids, id_as_of_pairs = \
+            (Database.get_keys_from_status_list(status_list, lambda status: status.id),
+             Database.get_keys_from_status_list(status_list, lambda status: status.user.id),
+             Database.get_keys_from_status_list(status_list,
+                                                lambda status: (status.user.id, status.created_at_in_seconds)))
+        return (self.get_records_by_ids(session, Tweet, tweet_ids),
+                self.get_records_by_ids(session, Author, author_ids),
+                self.get_author_count_data_as_of(session, id_as_of_pairs))
+
+    @staticmethod
+    def get_keys_from_status_list(status_list, key_extractor):
+        """
+        Return a set of keys (in the database sense) from an iterable of Status objects
+        :param status_list: An iterable of Status objects (from the Twitter module)
+        :param key_extractor: A callable to extract relevant keys from a Status object
+        :return: A set containing all the keys in the status_list, either as scalar or as tuple (if more than 1 value)
+        """
+        return {key_extractor(status) for status in status_list}
 
     # ToDo: Refactor this to avoid repetition
     def insert_or_update_statuses(self, session, status_list):

@@ -1,4 +1,5 @@
 import json
+import os
 from contextlib import contextmanager
 
 from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, or_, and_
@@ -19,8 +20,7 @@ class Database(object):
     def __init__(self):
         with open("config.json", "r", encoding="utf-8") as f:
             self.config = json.load(f)
-        # ToDo: This might be incompatible with OS other than Windows...
-        self.connection_string = "sqlite:///" + self.config["tweets_db"]["path"]
+        self.connection_string = "sqlite:///" + "/".join(self.config["tweets_db"]["path"])
 
     def _get_engine(self):
         """

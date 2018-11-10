@@ -1,7 +1,8 @@
 {
   "tweets_db": {
-    "path": "../data/database.db",
-    "new_tweets_table_name": "tweets",
-    "historical_tweets_table_name": "historical_tweets"
+    "path": ["..", "data", "database.db"]
+  },
+  "secrets_file": {
+    "path": [".", "secrets", "secrets.json"]
   }
 }

@@ -14,8 +14,10 @@ class Accessor(object):
         """
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(filename="log.txt", level=logging.DEBUG)
-        # ToDo: Path should not be hardcoded
-        with open(os.path.join(os.getcwd(), "secrets", "secrets.json"), "r", encoding="utf-8") as f:
+        with open("config.json", "r") as f:
+            config = json.load(f)
+        path_components = config["secrets_file"]["path"]
+        with open(os.path.join(os.getcwd(), *path_components), "r", encoding="utf-8") as f:
             self.secrets = json.load(f)["api"]
             masked_secrets = {key: value[:3] + ("*" * (len(value) - 3)) for key, value in self.secrets.items()}
             self.logger.debug("Created an API instance with {0}".format(masked_secrets))
@@ -40,7 +42,7 @@ class Accessor(object):
 if __name__ == "__main__":
     acc = Accessor()
     twitter_accounts = ["energate_news", "business", "BloombergNRG", "ftenergy", "IEA"]
-    tweets_list = [acc.get_tweets_by_user(twitter_account, count=100) for twitter_account in twitter_accounts]
+    tweets_list = [acc.get_tweets_by_user(twitter_account, count=2) for twitter_account in twitter_accounts]
     db = tables.Database()
     import tables
     for tweets in tweets_list:

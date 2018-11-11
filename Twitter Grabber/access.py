@@ -41,10 +41,11 @@ class Accessor(object):
 
 if __name__ == "__main__":
     acc = Accessor()
-    twitter_accounts = ["energate_news", "business", "BloombergNRG", "ftenergy", "IEA"]
+    twitter_accounts = ["business", "BloombergNRG", "ftenergy", "IEA", "LBBW_Research", "FT"]
     tweets_list = [acc.get_tweets_by_user(twitter_account, count=5) for twitter_account in twitter_accounts]
     db = tables.Database()
     import tables
     for tweets in tweets_list:
         with db.get_session() as session:
             db.insert_or_update_statuses(session, tweets)
+    #model = KeyedVectors.load_word2vec_format('./data/raw/GoogleNews-vectors-negative300.bin/GoogleNews-vectors-negative300.bin', binary=True)

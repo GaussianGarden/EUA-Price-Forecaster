@@ -36,8 +36,11 @@ class Database(object):
         Create a session with the bound database engine.
         :return: A session instance
         """
-        Session = sessionmaker(bind=self._get_engine())
-        return Session()
+        try:
+            return self.Session()
+        except AttributeError:
+            self.Session = sessionmaker(bind=self._get_engine())
+        return self.Session()
 
     @contextmanager
     def get_session(self):

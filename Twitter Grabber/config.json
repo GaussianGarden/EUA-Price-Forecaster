@@ -1,7 +1,4 @@
 {
-  "tweets_db": {
-    "path": ["..", "data", "database.db"]
-  },
   "secrets_file": {
     "path": [".", "secrets", "secrets.json"]
   }

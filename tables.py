@@ -1,13 +1,13 @@
 import json
+import logging
 import os
+from calendar import timegm
 from contextlib import contextmanager
+from email.utils import parsedate
 
-from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, or_, and_
+from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, or_, and_, Numeric
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
-import logging
-from email.utils import parsedate
-from calendar import timegm
 
 Base = declarative_base()
 logger = logging.getLogger(__name__)
@@ -18,9 +18,11 @@ class Database(object):
     """A simple wrapper for an SQLite database with SQLAlchemy"""
 
     def __init__(self):
-        with open("config.json", "r", encoding="utf-8") as f:
+        module_dir = os.path.dirname(os.path.realpath(__file__))
+        config_path = os.path.join(module_dir, "config.json")
+        with open(config_path, "r", encoding="utf-8") as f:
             self.config = json.load(f)
-        self.connection_string = "sqlite:///" + "/".join(self.config["tweets_db"]["path"])
+        self.connection_string = "sqlite:///" + "/".join([module_dir, "/".join(self.config["db"]["path"])])
 
     def _get_engine(self):
         """
@@ -160,7 +162,7 @@ class Database(object):
             for (mapper, dic, key_extractor) in [(Tweet, tweet_dict, lambda state: state.id),
                                                  (Author, author_dict, lambda state: state.user.id),
                                                  (AuthorCountData, author_count_data_dict,
-                                                 lambda state: (state.user.id, state.created_at_in_seconds))]:
+                                                  lambda state: (state.user.id, state.created_at_in_seconds))]:
                 Database._compare_with_dict(session, status, mapper, dic, key_extractor)
 
 
@@ -325,6 +327,68 @@ class AuthorCountData(Base):
         self.favorites_count = status.user.favourites_count
         self.followers_count = status.user.followers_count
         self.friends_count = status.user.friends_count
+
+
+class CoreFinancialData(Base):
+    """An ORM class to store financial data used for prediction"""
+    __tablename__ = "core_financial_data"
+
+    date = Column(Integer, primary_key=True)
+    open = Column(Numeric(3))
+    high = Column(Numeric(3))
+    low = Column(Numeric(3))
+    settle = Column(Numeric(3))
+    change = Column(Numeric(3))
+    volume = Column(Numeric(3))
+    prev_day_open_interest = Column(Numeric(3))
+    gas_open = Column(Numeric(3))
+    gas_high = Column(Numeric(3))
+    gas_low = Column(Numeric(3))
+    gas_settle = Column(Numeric(3))
+    gas_change = Column(Numeric(3))
+    gas_volume = Column(Numeric(3))
+    coal_open = Column(Numeric(3))
+    coal_high = Column(Numeric(3))
+    coal_low = Column(Numeric(3))
+    coal_settle = Column(Numeric(3))
+    coal_change = Column(Numeric(3))
+    coal_volume = Column(Numeric(3))
+    oil_open = Column(Numeric(3))
+    oil_high = Column(Numeric(3))
+    oil_low = Column(Numeric(3))
+    oil_settle = Column(Numeric(3))
+    oil_change = Column(Numeric(3))
+    oil_volume = Column(Numeric(3))
+
+    def __init__(self, date, ets_open, high, low, settle, change, volume, prev_day_open_interest, gas_open, gas_high,
+                 gas_low, gas_settle, gas_change, gas_volume, coal_open, coal_high, coal_low, coal_settle, coal_change,
+                 coal_volume, oil_open, oil_high, oil_low, oil_settle, oil_change, oil_volume):
+        self.date = date
+        self.open = ets_open
+        self.high = high
+        self.low = low
+        self.settle = settle
+        self.change = change
+        self.volume = volume
+        self.prev_day_open_interest = prev_day_open_interest
+        self.gas_open = gas_open
+        self.gas_high = gas_high
+        self.gas_low = gas_low
+        self.gas_settle = gas_settle
+        self.gas_change = gas_change
+        self.gas_volume = gas_volume
+        self.coal_open = coal_open
+        self.coal_high = coal_high
+        self.coal_low = coal_low
+        self.coal_settle = coal_settle
+        self.coal_change = coal_change
+        self.coal_volume = coal_volume
+        self.oil_open = oil_open
+        self.oil_high = oil_high
+        self.oil_low = oil_low
+        self.oil_settle = oil_settle
+        self.oil_change = oil_change
+        self.oil_volume = oil_volume
 
 
 if __name__ == "__main__":

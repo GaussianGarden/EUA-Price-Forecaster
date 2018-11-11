@@ -42,7 +42,7 @@ class Accessor(object):
 if __name__ == "__main__":
     acc = Accessor()
     twitter_accounts = ["energate_news", "business", "BloombergNRG", "ftenergy", "IEA"]
-    tweets_list = [acc.get_tweets_by_user(twitter_account, count=2) for twitter_account in twitter_accounts]
+    tweets_list = [acc.get_tweets_by_user(twitter_account, count=5) for twitter_account in twitter_accounts]
     db = tables.Database()
     import tables
     for tweets in tweets_list:

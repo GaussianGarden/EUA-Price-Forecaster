@@ -3,3 +3,6 @@ Twitter Grabber/log.txt
 Twitter Grabber/.idea/*
 Twitter Grabber/secrets/secrets.json
 *.db
+.idea/*
+__pycache__/*
+log.txt

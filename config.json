@@ -1,5 +1,13 @@
 {
   "db": {
     "path": ["data", "database.db"]
-  }
+  },
+  "relevant_accounts": [
+  "business",
+  "BloombergNRG",
+  "ftenergy",
+  "IEA",
+  "LBBW_Research",
+  "FT"
+  ]
 }

@@ -11,7 +11,9 @@ from sqlalchemy.orm import relationship, sessionmaker
 
 Base = declarative_base()
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename="log.txt", level=logging.DEBUG)
+logging.basicConfig(filename="log.txt", level=logging.INFO,
+                    format='%(levelname)s %(filename)s %(funcName)s %(asctime)s %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
 
 
 class Database(object):

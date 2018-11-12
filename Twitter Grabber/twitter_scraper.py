@@ -1,14 +1,14 @@
 import json
 import logging
 import os
-
 import twitter
 from sqlalchemy import func
-
 import database
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename="log.txt", level=logging.INFO, format='%(levelname) %(asctime) %(message)')
+logging.basicConfig(filename="log.txt", level=logging.INFO,
+                    format='%(levelname)s %(filename)s %(funcName)s %(asctime)s %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
 
 
 class Accessor(object):
@@ -24,7 +24,6 @@ class Accessor(object):
         path_components = config["secrets_file"]["path"]
         general_config_path = os.path.join(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir),
                                            "config.json")
-        print(general_config_path)
         with open(general_config_path, "r") as f:
             config = json.load(f)
             self.relevant_accounts = config["relevant_accounts"]
@@ -67,17 +66,17 @@ class Accessor(object):
             for (max_tweet_id, tweet) in query_result
         }
 
-    def get_all_tweet_since(self, db, sess, tweets_per_call=200):
+    def get_all_tweets_since(self, db_instance, sess, tweets_per_call=200):
         """
         Fetch all tweets since most recent tweet in the database for all relevant accounts
-        :param db: A database instance
+        :param db_instance: A database instance
         :param sess: An SQLAlchemy session instance
         :param tweets_per_call: Number of statuses to fetch per individual call (limit is 200)
         :return: None
         """
         since_ids = self.get_maximum_tweet_id_per_account(sess)
         for screen_name in self.relevant_accounts:
-            logger.info("Fetching Tweets for Screen Name{0}.".format(screen_name))
+            logger.info("Fetching Tweets for Screen Name {0}.".format(screen_name))
             since_id = since_ids.get(screen_name) or 0
             max_id = None
             logger.info("highest ID in database is {0} (0 = no record available).".format(since_id))
@@ -87,7 +86,7 @@ class Accessor(object):
                 # Thus, the next call will only fetch tweets prior to that tweet.
                 tweets = self.get_tweets_by_user(screen_name, since_id=since_id, max_id=max_id, count=tweets_per_call)
                 logger.info("Tweets received: {0}.".format(0 if tweets is None else len(tweets)))
-                db.insert_or_update_statuses(sess, tweets)
+                db_instance.insert_or_update_statuses(sess, tweets)
                 sess.commit()
                 if tweets is None or len(tweets) < tweets_per_call:
                     logger.info("Finished fetching for user {0}.".format(screen_name))
@@ -104,6 +103,6 @@ if __name__ == "__main__":
     # './data/raw/GoogleNews-vectors-negative300.bin/GoogleNews-vectors-negative300.bin', binary=True)
     with db.get_session() as session:
         try:
-            acc.get_all_tweet_since(db, session, 200)
+            acc.get_all_tweets_since(db, session, 200)
         except Exception as err:
             logger.exception(err)

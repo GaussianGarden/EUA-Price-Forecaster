@@ -76,10 +76,10 @@ class Accessor(object):
         """
         since_ids = self.get_maximum_tweet_id_per_account(sess)
         for screen_name in self.relevant_accounts:
-            logger.info("Fetching Tweets for Screen Name {0}.".format(screen_name))
+            logger.info("Fetching Tweets for Screen Name @{0}.".format(screen_name))
             since_id = since_ids.get(screen_name) or 0
             max_id = None
-            logger.info("highest ID in database is {0} (0 = no record available).".format(since_id))
+            logger.info("Highest ID in database is {0} (0 = no record available).".format(since_id))
             while True:
                 # Start by getting all tweets since since_id with no max_id passed. After receiving the tweets, max_id
                 # will be updated and will be set to the minimum id received in that batch minus 1.

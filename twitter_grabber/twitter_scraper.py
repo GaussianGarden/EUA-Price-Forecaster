@@ -4,6 +4,7 @@ import os
 import twitter
 from sqlalchemy import func
 import database
+from util import get_module_dir, get_local_json_file
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename="log.txt", level=logging.INFO,
@@ -18,23 +19,16 @@ class Accessor(object):
         Create an API Accessor object. This reads the secrets from the configuration and binds a twitter API object
         and a logger to the Accessor instance.
         """
-        # ToDo: Refactor this whole stuff into a util function. Importing with relative paths is evil...
-        module_dir = os.path.dirname(os.path.realpath(__file__))
-        config_path = os.path.join(module_dir, "config.json")
-        with open(config_path, "r", encoding="utf-8") as f:
-            config = json.load(f)
+        module_dir = get_module_dir(__file__)
+        config = get_local_json_file(module_dir, "config.json")
         path_components = config["secrets_file"]["path"]
-        general_config_path = os.path.join(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir),
-                                           "config.json")
-        with open(general_config_path, "r") as f:
-            config = json.load(f)
-            self.relevant_accounts = config["relevant_accounts"]
-        with open(os.path.join(module_dir, *path_components), "r", encoding="utf-8") as f:
-            config = json.load(f)
-            self.secrets = config["api"]
-            masked_secrets = {key: value[:3] + ("*" * (len(value) - 3)) for key, value in self.secrets.items()}
-            logger.debug("Created an API instance with {0}".format(masked_secrets))
-            self.api = twitter.Api(**self.secrets)
+        config = get_local_json_file(os.path.join(module_dir, os.pardir), "config.json")
+        self.relevant_accounts = config["relevant_accounts"]
+        config = get_local_json_file(module_dir, os.path.join(*path_components))
+        self.secrets = config["api"]
+        masked_secrets = {key: value[:3] + ("*" * (len(value) - 3)) for key, value in self.secrets.items()}
+        logger.debug("Created an API instance with {0}".format(masked_secrets))
+        self.api = twitter.Api(**self.secrets)
 
     def get_tweets_by_user(self, screen_name, since_id=None, max_id=None, count=None):
         """

@@ -1,9 +1,12 @@
 *.csv
-Twitter Grabber/log.txt
-Twitter Grabber/.idea/*
-Twitter Grabber/secrets/secrets.json
+twitter_grabber/log.txt
+twitter_grabber/.idea/*
+*/secrets.json
 *.db
 .idea/*
 __pycache__/*
 data/raw/*
-log.txt
+*log.txt
+*.pyc
+twitter_grabber/secrets/secrets.json
+twitter_grabber/.idea/libraries/R_User_Library.xml

@@ -18,8 +18,10 @@ class Accessor(object):
         Create an API Accessor object. This reads the secrets from the configuration and binds a twitter API object
         and a logger to the Accessor instance.
         """
-
-        with open("config.json", "r") as f:
+        # ToDo: Refactor this whole stuff into a util function. Importing with relative paths is evil...
+        module_dir = os.path.dirname(os.path.realpath(__file__))
+        config_path = os.path.join(module_dir, "config.json")
+        with open(config_path, "r", encoding="utf-8") as f:
             config = json.load(f)
         path_components = config["secrets_file"]["path"]
         general_config_path = os.path.join(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir),
@@ -27,7 +29,7 @@ class Accessor(object):
         with open(general_config_path, "r") as f:
             config = json.load(f)
             self.relevant_accounts = config["relevant_accounts"]
-        with open(os.path.join(os.getcwd(), *path_components), "r", encoding="utf-8") as f:
+        with open(os.path.join(module_dir, *path_components), "r", encoding="utf-8") as f:
             config = json.load(f)
             self.secrets = config["api"]
             masked_secrets = {key: value[:3] + ("*" * (len(value) - 3)) for key, value in self.secrets.items()}
@@ -94,15 +96,3 @@ class Accessor(object):
                 else:
                     max_id = min(tweets, key=lambda status: status.id).id - 1
                     logger.info("Updated max_id to {0}.".format(max_id))
-
-
-if __name__ == "__main__":
-    acc = Accessor()
-    db = database.Database()
-    # model = KeyedVectors.load_word2vec_format(
-    # './data/raw/GoogleNews-vectors-negative300.bin/GoogleNews-vectors-negative300.bin', binary=True)
-    with db.get_session() as session:
-        try:
-            acc.get_all_tweets_since(db, session, 200)
-        except Exception as err:
-            logger.exception(err)

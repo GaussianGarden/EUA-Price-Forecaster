@@ -22,8 +22,14 @@ def data_prepare(path):
     data['lag6'] = data["Settle"].shift(6)
     data['lag7'] = data["Settle"].shift(7)
 
-    # missing data
+    # log values
     import numpy as np
+    data.loc[:, data.columns[1:5]] = data.loc[:, data.columns[1:5]].apply(np.log)
+    data.loc[:, data.columns[8:12]] = data.loc[:, data.columns[8:12]].apply(np.log)
+    data.loc[:, data.columns[14:18]] = data.loc[:, data.columns[14:18]].apply(np.log)
+    data.loc[:, data.columns[20:24]] = data.loc[:, data.columns[20:24]].apply(np.log)
+
+    # missing data
     data.loc[:, data.columns[1:]] = data.loc[:, data.columns[1:]].replace(0, np.NaN)
     data.loc[:, data.columns[1:]] = data.loc[:, data.columns[1:]].replace(np.NaN, data.loc[:, data.columns[1:]].mean())
     # log scale of data
@@ -38,7 +44,7 @@ def data_prepare(path):
     data['ema'] = ta.ema_indicator(data["Settle"], n=12, fillna=False)
     
     # delete first row
-    data = data.drop(data.index[0])
+    data = data.drop(data.index[[0, 1, 2, 3, 4, 5, 6]])
 
     print(data.isnull().sum())
     return data

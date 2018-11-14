@@ -206,7 +206,7 @@ class Tweet(Base):
         """
         return Tweet(
             status.id,
-            status.text,
+            status.full_text or status.text,
             status.created_at_in_seconds,
             status.lang,
             status.retweet_count,
@@ -215,7 +215,7 @@ class Tweet(Base):
         )
 
     def update(self, status):
-        self.text = status.text
+        self.text = status.full_text or status.text
         self.created_at = status.created_at_in_seconds
         self.language = status.lang
         self.retweet_count = status.retweet_count

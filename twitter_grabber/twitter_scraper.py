@@ -29,6 +29,7 @@ class Accessor(object):
         masked_secrets = {key: value[:3] + ("*" * (len(value) - 3)) for key, value in self.secrets.items()}
         logger.debug("Created an API instance with {0}".format(masked_secrets))
         self.api = twitter.Api(**self.secrets)
+        self.api.tweet_mode = "extended"  # If not set, tweets will be truncated after 140 characters
 
     def get_tweets_by_user(self, screen_name, since_id=None, max_id=None, count=None):
         """

@@ -24,10 +24,9 @@ def data_prepare(path):
 
     # log values
     import numpy as np
-    data.loc[:, data.columns[1:5]] = data.loc[:, data.columns[1:5]].apply(np.log)
-    data.loc[:, data.columns[8:12]] = data.loc[:, data.columns[8:12]].apply(np.log)
-    data.loc[:, data.columns[14:18]] = data.loc[:, data.columns[14:18]].apply(np.log)
-    data.loc[:, data.columns[20:24]] = data.loc[:, data.columns[20:24]].apply(np.log)
+    data.loc[:, data.columns[np.r_[1:5, 8:12, 14:18, 20:24]]] = \
+        data.loc[:, data.columns[np.r_[1:5, 8:12, 14:18, 20:24]]].apply(np.log)
+
 
     # missing data
     data.loc[:, data.columns[1:]] = data.loc[:, data.columns[1:]].replace(0, np.NaN)

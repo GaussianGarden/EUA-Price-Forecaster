@@ -9,6 +9,8 @@ from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, or_, 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 
+from util import get_module_dir, get_local_json_file
+
 Base = declarative_base()
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename="log.txt", level=logging.INFO,
@@ -20,10 +22,8 @@ class Database(object):
     """A simple wrapper for an SQLite database with SQLAlchemy"""
 
     def __init__(self):
-        module_dir = os.path.dirname(os.path.realpath(__file__))
-        config_path = os.path.join(module_dir, "config.json")
-        with open(config_path, "r", encoding="utf-8") as f:
-            self.config = json.load(f)
+        module_dir = get_module_dir(__file__)
+        self.config = get_local_json_file(module_dir, "config.json")
         self.connection_string = "sqlite:///" + "/".join([module_dir, "/".join(self.config["db"]["path"])])
 
     def _get_engine(self):
@@ -206,7 +206,7 @@ class Tweet(Base):
         """
         return Tweet(
             status.id,
-            status.text,
+            status.full_text or status.text,
             status.created_at_in_seconds,
             status.lang,
             status.retweet_count,
@@ -215,7 +215,7 @@ class Tweet(Base):
         )
 
     def update(self, status):
-        self.text = status.text
+        self.text = status.full_text or status.text
         self.created_at = status.created_at_in_seconds
         self.language = status.lang
         self.retweet_count = status.retweet_count

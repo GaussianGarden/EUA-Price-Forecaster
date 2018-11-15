@@ -4,6 +4,7 @@ import os
 import twitter
 from sqlalchemy import func
 import database
+from util import get_module_dir, get_local_json_file
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename="log.txt", level=logging.INFO,
@@ -18,21 +19,17 @@ class Accessor(object):
         Create an API Accessor object. This reads the secrets from the configuration and binds a twitter API object
         and a logger to the Accessor instance.
         """
-
-        with open("config.json", "r") as f:
-            config = json.load(f)
+        module_dir = get_module_dir(__file__)
+        config = get_local_json_file(module_dir, "config.json")
         path_components = config["secrets_file"]["path"]
-        general_config_path = os.path.join(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir),
-                                           "config.json")
-        with open(general_config_path, "r") as f:
-            config = json.load(f)
-            self.relevant_accounts = config["relevant_accounts"]
-        with open(os.path.join(os.getcwd(), *path_components), "r", encoding="utf-8") as f:
-            config = json.load(f)
-            self.secrets = config["api"]
-            masked_secrets = {key: value[:3] + ("*" * (len(value) - 3)) for key, value in self.secrets.items()}
-            logger.debug("Created an API instance with {0}".format(masked_secrets))
-            self.api = twitter.Api(**self.secrets)
+        config = get_local_json_file(os.path.join(module_dir, os.pardir), "config.json")
+        self.relevant_accounts = config["relevant_accounts"]
+        config = get_local_json_file(module_dir, os.path.join(*path_components))
+        self.secrets = config["api"]
+        masked_secrets = {key: value[:3] + ("*" * (len(value) - 3)) for key, value in self.secrets.items()}
+        logger.debug("Created an API instance with {0}".format(masked_secrets))
+        self.api = twitter.Api(**self.secrets)
+        self.api.tweet_mode = "extended"  # If not set, tweets will be truncated after 140 characters
 
     def get_tweets_by_user(self, screen_name, since_id=None, max_id=None, count=None):
         """
@@ -94,15 +91,3 @@ class Accessor(object):
                 else:
                     max_id = min(tweets, key=lambda status: status.id).id - 1
                     logger.info("Updated max_id to {0}.".format(max_id))
-
-
-if __name__ == "__main__":
-    acc = Accessor()
-    db = database.Database()
-    # model = KeyedVectors.load_word2vec_format(
-    # './data/raw/GoogleNews-vectors-negative300.bin/GoogleNews-vectors-negative300.bin', binary=True)
-    with db.get_session() as session:
-        try:
-            acc.get_all_tweets_since(db, session, 200)
-        except Exception as err:
-            logger.exception(err)

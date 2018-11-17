@@ -1,6 +1,6 @@
 from unittest import TestCase, main
 
-from text_preparation import extract_hashtags, extract_hashtags_from_corpus
+from preprocessing.text_preparation import extract_hashtags, extract_hashtags_from_corpus
 
 
 class TestTextPreparation(TestCase):

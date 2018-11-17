@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import twitter
@@ -8,7 +7,7 @@ from util import get_module_dir, get_local_json_file
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename="log.txt", level=logging.INFO,
-                    format='%(levelname)s %(filename)s %(funcName)s %(asctime)s %(message)s',
+                    format='%(asctime)s %(levelname)s %(filename)s %(funcName)s %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 
 

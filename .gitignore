@@ -12,3 +12,4 @@ twitter_grabber/secrets/secrets.json
 twitter_grabber/.idea/libraries/R_User_Library.xml
 twitter_grabber/.DS_Store
 .ipynb_checkpoints/*
+*.bin

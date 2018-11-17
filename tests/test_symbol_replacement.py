@@ -1,6 +1,6 @@
 from unittest import TestCase, main
 
-from symbol_replacement import get_replacement, replace_sentence
+from preprocessing.symbol_replacement import get_replacement, replace_sentence
 
 
 class TestSymbolReplacement(TestCase):

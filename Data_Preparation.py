@@ -46,7 +46,8 @@ def data_prepare(path):
     data = data.drop(data.index[[0, 1, 2, 3, 4, 5, 6]])
 
     print(data.isnull().sum())
+    data = data.reset_index()
     return data
 
 
-data_prepare('/Users/Chris/Documents/GitHub/EUA-Price-Forecaster/Data')
+

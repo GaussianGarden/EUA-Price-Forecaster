@@ -9,11 +9,16 @@ def data_prepare(path):
 
     # lagging values
     data.loc[:, data.columns[2:6]] = data.loc[:, data.columns[2:6]].shift(1)
-    data.loc[:, data.columns[9:13]] = data.loc[:, data.columns[9:13]].shift(1)
-    data.loc[:, data.columns[15:19]] = data.loc[:, data.columns[15:19]].shift(1)
-    data.loc[:, data.columns[21:25]] = data.loc[:, data.columns[21:25]].shift(1)
-    
-    # price lags
+    data.loc[:, data.columns[8:12]] = data.loc[:, data.columns[8:12]].shift(1)
+    data.loc[:, data.columns[13:17]] = data.loc[:, data.columns[13:17]].shift(1)
+    data.loc[:, data.columns[18:22]] = data.loc[:, data.columns[18:22]].shift(1)
+
+    # log values
+    import numpy as np
+    data.loc[:, data.columns[np.r_[1:5, 7:11, 12:16, 17:21]]] = \
+        data.loc[:, data.columns[np.r_[1:5, 7:11, 12:16, 17:21]]].apply(np.log)
+
+      # price lags
     data['lag1'] = data["Settle"].shift(1)
     data['lag2'] = data["Settle"].shift(2)
     data['lag3'] = data["Settle"].shift(3)
@@ -21,12 +26,6 @@ def data_prepare(path):
     data['lag5'] = data["Settle"].shift(5)
     data['lag6'] = data["Settle"].shift(6)
     data['lag7'] = data["Settle"].shift(7)
-
-    # log values
-    import numpy as np
-    data.loc[:, data.columns[np.r_[1:5, 8:12, 14:18, 20:24]]] = \
-        data.loc[:, data.columns[np.r_[1:5, 8:12, 14:18, 20:24]]].apply(np.log)
-
 
     # missing data
     data.loc[:, data.columns[1:]] = data.loc[:, data.columns[1:]].replace(0, np.NaN)
@@ -46,7 +45,7 @@ def data_prepare(path):
     data = data.drop(data.index[[0, 1, 2, 3, 4, 5, 6]])
 
     print(data.isnull().sum())
-    data = data.reset_index()
+    data = data.reset_index(drop=True)
     return data
 
 

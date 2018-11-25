@@ -1,7 +1,7 @@
 
 # load data
 from Data_Preparation import data_prepare
-data_prepare('/Users/Chris/Documents/GitHub/EUA-Price-Forecaster/Data')
+data = data_prepare('/Users/Chris/Documents/GitHub/EUA-Price-Forecaster/Data')
 
 # naive models OLS
 import pandas as pd

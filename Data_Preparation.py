@@ -27,11 +27,6 @@ def data_prepare(path):
     data['lag6'] = data["Settle"].shift(6)
     data['lag7'] = data["Settle"].shift(7)
 
-    # missing data
-    data.loc[:, data.columns[1:]] = data.loc[:, data.columns[1:]].replace(0, np.NaN)
-    data.loc[:, data.columns[1:]] = data.loc[:, data.columns[1:]].replace(np.NaN, data.loc[:, data.columns[1:]].mean())
-    # log scale of data
-
     # additional features
     import ta as ta
     data['bollinger_high'] = ta.bollinger_hband(data["Settle"], n=20, ndev=2, fillna=True)
@@ -40,6 +35,10 @@ def data_prepare(path):
     data['tsi20'] = ta.tsi(data["Settle"], r=25, s=13, fillna=False)
     data['macd'] = ta.macd(data["Settle"], n_fast=12, n_slow=26, fillna=False)
     data['ema'] = ta.ema_indicator(data["Settle"], n=12, fillna=False)
+    
+    # missing data
+    data.loc[:, data.columns[1:]] = data.loc[:, data.columns[1:]].replace(0, np.NaN)
+    data.loc[:, data.columns[1:]] = data.loc[:, data.columns[1:]].replace(np.NaN, data.loc[:, data.columns[1:]].mean())
     
     # delete first row
     data = data.drop(data.index[[0, 1, 2, 3, 4, 5, 6]])

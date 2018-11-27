@@ -16,7 +16,7 @@ def data_prepare(path):
     # log values
     import numpy as np
     data.loc[:, data.columns[np.r_[1:5, 7:11, 12:16, 17:21]]] = \
-        data.loc[:, data.columns[np.r_[1:5, 7:11, 12:16, 17:21]]].apply(np.log)
+        data.loc[:, data.columns[np.r_[1:5, 7:11, 12:16, 17:21]]].applymap(lambda x:np.log(1+x))
 
       # price lags
     data['lag1'] = data["Settle"].shift(1)

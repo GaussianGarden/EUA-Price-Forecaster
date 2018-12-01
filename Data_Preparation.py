@@ -1,4 +1,3 @@
-
 def data_prepare(path):
     import os
     os.chdir(path)
@@ -16,9 +15,9 @@ def data_prepare(path):
     # log values
     import numpy as np
     data.loc[:, data.columns[np.r_[1:5, 7:11, 12:16, 17:21]]] = \
-        data.loc[:, data.columns[np.r_[1:5, 7:11, 12:16, 17:21]]].applymap(lambda x:np.log(1+x))
+        data.loc[:, data.columns[np.r_[1:5, 7:11, 12:16, 17:21]]].applymap(lambda x: np.log(1 + x))
 
-      # price lags
+    # price lags
     data['lag1'] = data["Settle"].shift(1)
     data['lag2'] = data["Settle"].shift(2)
     data['lag3'] = data["Settle"].shift(3)
@@ -31,21 +30,19 @@ def data_prepare(path):
     import ta as ta
     data['bollinger_high'] = ta.bollinger_hband(data["Settle"], n=20, ndev=2, fillna=True)
     data['bollinger_low'] = ta.bollinger_lband(data["Settle"], n=20, ndev=2, fillna=True)
-    data['rsi20'] = ta.rsi(data["Settle"], n=20,  fillna=False)
+    data['rsi20'] = ta.rsi(data["Settle"], n=20, fillna=False)
     data['tsi20'] = ta.tsi(data["Settle"], r=25, s=13, fillna=False)
     data['macd'] = ta.macd(data["Settle"], n_fast=12, n_slow=26, fillna=False)
     data['ema'] = ta.ema_indicator(data["Settle"], n=12, fillna=False)
-    
+
     # missing data
     data.loc[:, data.columns[1:]] = data.loc[:, data.columns[1:]].replace(0, np.NaN)
     data.loc[:, data.columns[1:]] = data.loc[:, data.columns[1:]].replace(np.NaN, data.loc[:, data.columns[1:]].mean())
-    
+
     # delete first row
     data = data.drop(data.index[[0, 1, 2, 3, 4, 5, 6]])
 
     print(data.isnull().sum())
+    data = data.sort_values(['Date'], ascending=[True])
     data = data.reset_index(drop=True)
     return data
-
-
-

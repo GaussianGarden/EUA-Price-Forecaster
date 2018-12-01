@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from keras.models import Sequential
 from keras.layers import Dense
+from keras.layers.normalization import BatchNormalization
 from keras.wrappers.scikit_learn import KerasRegressor
 from sklearn.preprocessing import StandardScaler
 import os
@@ -18,15 +19,18 @@ def baseline_model_1():
     # create model
     model = Sequential()
     model.add(Dense(32, input_dim=32, kernel_initializer='normal', activation='relu'))
+    model.add(BatchNormalization())
     model.add(Dense(16, kernel_initializer='normal', activation='relu'))
+    model.add(BatchNormalization())
     model.add(Dense(8, kernel_initializer='normal', activation='relu'))
+    model.add(BatchNormalization())
     model.add(Dense(1, kernel_initializer='normal'))
     # Compile model
     model.compile(loss='mean_squared_error', optimizer='adam')
     return model
 
 
-# define base model one
+# define base model two
 def baseline_model_2():
     # create model
     model = Sequential()
@@ -77,6 +81,14 @@ for i in range(0, 3, 1):  # 806
     estimate_2 = np.exp(estimate_2) - 1
 
     # create ensemble
-    estimate_ensemble = (estimate_1 + estimate_2)/2
+    estimate_ensemble = (estimate_1 + estimate_2) / 2
     # save predictions and observations
     results.loc[len(results)] = [test_date, np.exp(y_test_180) - 1, estimate_1, estimate_2, estimate_ensemble]
+
+
+def rmse(predictions, targets):
+    return np.sqrt(((predictions - targets) ** 2).mean())
+
+
+rmse_FC1 = rmse(results.loc[:, results.columns[2]], results.loc[:, results.columns[1]])
+print(rmse_FC1)

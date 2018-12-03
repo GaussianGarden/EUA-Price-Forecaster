@@ -13,3 +13,4 @@ twitter_grabber/.idea/libraries/R_User_Library.xml
 twitter_grabber/.DS_Store
 .ipynb_checkpoints/*
 *.bin
+saved_models/*

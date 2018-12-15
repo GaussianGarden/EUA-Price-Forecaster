@@ -3,7 +3,7 @@ from calendar import timegm
 from contextlib import contextmanager
 from email.utils import parsedate
 
-from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, or_, and_, Numeric
+from sqlalchemy import Column, Integer, String, ForeignKey, create_engine, or_, and_, Numeric, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 
@@ -182,11 +182,14 @@ class Tweet(Base):
     retweet_count = Column(Integer)
     favorite_count = Column(Integer)
     author_id = Column(Integer, ForeignKey("authors.id"))
+    is_relevant = Column(Boolean)
+    is_positive = Column(Boolean)
 
     # Store a references to the author
     author = relationship("Author", back_populates="tweets")
 
-    def __init__(self, tweet_id, text, created_at, language, retweet_count, favorite_count, author_id):
+    def __init__(self, tweet_id, text, created_at, language, retweet_count, favorite_count, author_id, is_relevant,
+                 is_positive):
         self.id = tweet_id
         self.text = text
         self.created_at = created_at
@@ -194,6 +197,8 @@ class Tweet(Base):
         self.retweet_count = retweet_count
         self.favorite_count = favorite_count
         self.author_id = author_id
+        self.is_relevant = is_relevant
+        self.is_positive = is_positive
 
     @staticmethod
     def from_status(status):
@@ -209,7 +214,9 @@ class Tweet(Base):
             status.lang,
             status.retweet_count,
             status.favorite_count,
-            status.user.id
+            status.user.id,
+            None,
+            None
         )
 
     def update(self, status):

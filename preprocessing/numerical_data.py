@@ -64,7 +64,7 @@ def make_shifts(df):
         cols = [name + val for val in ("High", "Low", "Settle", "Change")]
         new_cols = ["Prev. Day " + col for col in cols]
         df[new_cols] = df[cols].shift(1)
-        df = df.drop(columns=[col for col in cols if col != "Settle"])
+        df = df.drop(columns=[col for col in cols if col != "Change"])
     df = df.iloc[1:]
     return df
 
@@ -116,4 +116,18 @@ def log_prices(df):
     loggable_columns = [col for col in df.columns if any(word in col for word in ("Open", "High", "Low", "Settle"))
                         and "Interest" not in col]
     df[loggable_columns] = (df[loggable_columns] + 1).apply(np.log)
+    return df
+
+
+def add_prev_values(df, num_days, columns=("Change",)):
+    """
+
+    :param df: A pandas DataFrame instance
+    :param num_days: The number of days to include as features
+    :param columns: An iterable of column names to perform the shifts on
+    :return: df
+    """
+    for col in columns:
+        for i in range(1, num_days + 1):
+            df[col + "_-" + str(i)] = df[col].shift(i).values
     return df

@@ -14,3 +14,4 @@ twitter_grabber/.DS_Store
 .ipynb_checkpoints/*
 *.bin
 saved_models/*
+tmp/*
